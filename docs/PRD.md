@@ -237,6 +237,12 @@ Fase 1 punya 17 endpoint, semuanya di bawah prefix `/api`. Kolom Auth menunjukka
 | GET | `/api/health` | Tidak | Cek server dan koneksi database hidup | — |
 | POST | `/api/test/reset` | Tidak | Reset database ke seed (hanya `NODE_ENV=test`) | — |
 
+Perilaku katalog yang perlu dicatat:
+
+- `GET /api/products?category=<slug>` dengan slug yang tidak dikenal mengembalikan 200 dengan daftar kosong (kategori diperlakukan sebagai filter, bukan resource).
+- `GET /api/products/:id` dengan ID bukan angka (misalnya `abc`) mengembalikan 404, sama seperti ID yang tidak ada.
+- Path yang tidak dikenal (misalnya `GET /`) mengembalikan 404 dengan format error di bawah.
+
 Semua error memakai format yang sama:
 
 ```json
@@ -256,6 +262,7 @@ Semua error memakai format yang sama:
 | 404 | Data tidak ada, atau milik user lain (BR-17) |
 | 409 | Konflik dengan kondisi data: stok tidak cukup, email sudah terdaftar, transisi status tidak diizinkan |
 | 500 | Error tak terduga di server (tidak boleh muncul di test) |
+| 503 | Database tidak dapat dihubungi (`GET /api/health`, kode `DB_UNAVAILABLE`); endpoint lain tetap 500 |
 
 ## 9. Halaman UI
 
@@ -263,7 +270,7 @@ Fase 1 punya 9 halaman. Header di setiap halaman berisi logo, kolom pencarian (d
 
 | Halaman | Route | Isi utama | Login |
 | --- | --- | --- | --- |
-| Beranda / katalog | `/` | Banner statis, tile kategori, toko pilihan, grid produk, filter kategori dan harga, sorting, pagination | Tidak |
+| Beranda / katalog | `/` | Banner statis, tile kategori, grid produk, filter kategori dan harga, sorting, pagination | Tidak |
 | Detail produk | `/products/:id` | Info produk, pemilih jumlah, tombol tambah ke keranjang | Tidak |
 | Register | `/register` | Form nama, email, password, konfirmasi | Tidak |
 | Login | `/login` | Form email dan password | Tidak |
@@ -287,7 +294,7 @@ Ambil polanya, bukan tampilannya. Logo, ilustrasi, nama, dan susunan identik dar
 | Tombol "Shop by Category" di baris navigasi kedua | Tombol "Semua Kategori" + 4–5 kategori utama |
 | Hero: banner besar + banner samping | 2 banner **statis** (tanpa autoplay), link ke kategori atau hasil filter |
 | Kategori sebagai tile dengan ikon garis dua warna | Diambil; tile = link ke filter kategori |
-| "Featured Brands" | Diganti "Toko Pilihan" (dari tabel `stores`) |
+| "Featured Brands" | Diganti "Toko Pilihan" (dari tabel `stores`) (ditunda ke fase berikutnya) |
 | Ruang putih lega, aksen kuning-amber hangat, teks abu kebiruan gelap | Diambil sebagai arah, dengan kode warna sendiri |
 | Menu Demos/Blog/Pages, nomor support, wishlist, recently viewed | Tidak dibuat |
 
@@ -362,7 +369,7 @@ Semua bagian memakai JavaScript, dan database berjalan langsung di Mac tanpa Doc
 | Database | MySQL 8.4 via Homebrew (`mysql@8.4`) |
 | Akses database | `mysql2` + file SQL (`schema.sql`, `seed.sql`) |
 | Backend | Express, `bcrypt`, `jsonwebtoken`, `zod` (validasi input) |
-| Frontend | React + Vite, React Router, Tailwind CSS, shadcn/ui |
+| Frontend | React + Vite, React Router, Tailwind CSS, shadcn/ui (beserta dependensinya: `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react`, `radix-ui`, `tw-animate-css`), font `@fontsource-variable/plus-jakarta-sans` |
 | Test | Playwright (API + E2E), Vitest (unit) |
 | CI | GitHub Actions dengan service MySQL 8.4 |
 | Alat bantu | VS Code, Git, DBeaver (melihat isi database) |
