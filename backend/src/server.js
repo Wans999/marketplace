@@ -25,6 +25,18 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Must stay after every route: anything that reached here matched nothing.
+app.use((req, res) => {
+  res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Endpoint tidak ditemukan' } });
+});
+
+// Express 5 forwards thrown errors and rejected promises here. Without it Express replies with HTML.
+// eslint-disable-next-line no-unused-vars -- Express only treats 4-argument middleware as an error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Terjadi kesalahan pada server' } });
+});
+
 const port = Number(process.env.PORT) || 3000;
 app.listen(port, () => {
   console.log(`API listening on http://localhost:${port} (${process.env.NODE_ENV})`);
