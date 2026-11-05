@@ -42,3 +42,10 @@ test('[BR-02] limit di atas 48 dibatasi menjadi 48', async ({ request }) => {
   const body = await res.json();
   expect(body.limit).toBe(48);
 });
+
+test('[AC-01.3] daftar page=5 berisi 2 item', async ({request}) => {
+    const res = await request.get('/api/products?page=5')
+    expect(res.status()).toBe(200);
+    const body = await res.json();
+    expect(body.items).toHaveLength(2);
+});
