@@ -393,7 +393,7 @@ marketplace/
 
 ## 13. Roadmap
 
-Fase 1 dibagi menjadi 7 slice berurutan. Di setiap slice urutannya sama: tabel → API → API test → UI → E2E test. Slice berikutnya dimulai hanya setelah Definition of Done slice sebelumnya terpenuhi.
+Fase 1 dibagi menjadi 7 slice berurutan, ditambah fase Full Testing antara slice 5 dan slice 6. Di setiap slice urutannya sama: tabel → API → API test → UI → E2E test. Slice berikutnya dimulai hanya setelah Definition of Done slice sebelumnya terpenuhi.
 
 | Slice | Isi | Story |
 | --- | --- | --- |
@@ -403,9 +403,24 @@ Fase 1 dibagi menjadi 7 slice berurutan. Di setiap slice urutannya sama: tabel �
 | 3. Keranjang | Tambah, ubah, hapus item, validasi stok | US-06 – US-07 |
 | 4. Checkout dan pembayaran | Checkout atomic, stok berkurang, pembayaran simulasi | US-08 – US-09 |
 | 5. Riwayat dan pembatalan | Riwayat, detail pesanan, pembatalan + stok kembali | US-10 – US-11 |
-| 6. Dokumentasi dan rilis portfolio | README, traceability matrix, report publik → repo siap dibagikan | — |
+| Full Testing | Pengujian lintas slice setelah semua fitur selesai (rincian di bawah) | US-01 – US-11 |
+| 6. Dokumentasi dan rilis portfolio | README, report publik, traceability matrix final dipublikasikan → repo siap dibagikan | — |
 
 CI dipasang sejak slice 1, bukan di akhir, supaya setiap slice berikutnya langsung teruji otomatis. Durasi per slice sengaja tidak ditulis karena tergantung waktu luang; patokannya, slice 1 yang belum selesai dalam 2–3 minggu berarti scope-nya terlalu besar.
+
+**Fase Full Testing (setelah slice 5, sebelum slice 6):**
+
+Slice 6 dimulai hanya setelah semua poin ini terpenuhi.
+
+- [ ] E2E perjalanan lengkap lintas slice: browse → register/login → keranjang → checkout → bayar → riwayat → batalkan
+- [ ] Regression: semua test slice 1–5 dijalankan ulang, semuanya hijau
+- [ ] Authorization matrix semua endpoint (lihat bagian 11)
+- [ ] State transition pesanan, termasuk transisi yang harus ditolak (lihat bagian 11)
+- [ ] Decision table checkout (lihat bagian 11)
+- [ ] Stabilitas CI: 0 test flaky dalam 10 run berturut-turut (bagian 1)
+- [ ] Exploratory testing: sesi terdokumentasi, temuan dicatat sebagai bug atau ditutup
+- [ ] Tampilan di lebar 360 px dan navigasi keyboard di semua halaman (bagian 6)
+- [ ] Traceability matrix lengkap: setiap AC dan BR sudah terhubung ke test
 
 **Definition of done (berlaku untuk setiap slice):**
 
