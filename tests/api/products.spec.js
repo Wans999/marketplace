@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, request } from '@playwright/test';
 import { API_URL } from '../fixtures/env.js';
 
 test.beforeAll(async ({ playwright }) => {
@@ -34,4 +34,11 @@ test('[AC-02.4][BR-03] minPrice lebih besar dari maxPrice ditolak 400', async ({
 
   const body = await res.json();
   expect(body.error.code).toBe('VALIDATION_ERROR');
+});
+
+test('[BR-02] limit di atas 48 dibatasi menjadi 48', async ({ request }) => {
+  const res = await request.get('/api/products?limit=100');
+  expect(res.status()).toBe(200);
+  const body = await res.json();
+  expect(body.limit).toBe(48);
 });
