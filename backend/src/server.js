@@ -1,5 +1,8 @@
 import express from 'express';
 import { pool } from './db.js';
+import { HttpError } from './http-error.js';
+import { resetDatabase } from './reset-db.js';
+import { catalogRouter } from './routes/catalog.js';
 
 const app = express();
 
@@ -25,6 +28,16 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+app.use('/api', catalogRouter);
+
+// Registered only in test mode; elsewhere the request falls through to the 404 handler.
+if (process.env.NODE_ENV === 'test') {
+  app.post('/api/test/reset', async (req, res) => {
+    await resetDatabase();
+    res.status(204).end();
+  });
+}
+
 // Must stay after every route: anything that reached here matched nothing.
 app.use((req, res) => {
   res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Endpoint tidak ditemukan' } });
@@ -33,6 +46,13 @@ app.use((req, res) => {
 // Express 5 forwards thrown errors and rejected promises here. Without it Express replies with HTML.
 // eslint-disable-next-line no-unused-vars -- Express only treats 4-argument middleware as an error handler
 app.use((err, req, res, next) => {
+  if (err instanceof HttpError) {
+    return res.status(err.status).json({ error: { code: err.code, message: err.message, details: err.details } });
+  }
+  // Client errors raised by Express itself, e.g. a malformed %-escape in the URL.
+  if (err.status >= 400 && err.status < 500) {
+    return res.status(err.status).json({ error: { code: 'BAD_REQUEST', message: 'Request tidak valid' } });
+  }
   console.error(err);
   res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Terjadi kesalahan pada server' } });
 });
