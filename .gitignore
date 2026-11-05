@@ -3,3 +3,5 @@ docs/references/
 node_modules/
 CLAUDE.md
 .DS_Store
+test-results/
+playwright-report/
