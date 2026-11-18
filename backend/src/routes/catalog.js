@@ -10,14 +10,20 @@ const MAX_LIMIT = 48; // BR-02
 
 // Treat "?minPrice=" like an absent param, so a cleared form field is not read as 0.
 const emptyToUndefined = (v) => (v === '' ? undefined : v);
-const intParam = (min) => z.preprocess(emptyToUndefined, z.coerce.number().int().min(min).optional());
+// `message` replaces zod's technical text; the UI shows price messages next to the price fields.
+const intParam = (min, message) =>
+  z.preprocess(
+    emptyToUndefined,
+    z.coerce.number({ error: message }).int({ error: message }).min(min, { error: message }).optional(),
+  );
+const PRICE_MESSAGE = 'Harga harus berupa angka bulat 0 atau lebih, tanpa titik atau huruf (contoh: 15000)';
 
 const listQuerySchema = z
   .object({
     q: z.preprocess(emptyToUndefined, z.string().trim().optional()),
     category: z.preprocess(emptyToUndefined, z.string().optional()),
-    minPrice: intParam(0),
-    maxPrice: intParam(0),
+    minPrice: intParam(0, PRICE_MESSAGE),
+    maxPrice: intParam(0, PRICE_MESSAGE),
     sort: z.preprocess(emptyToUndefined, z.enum(['newest', 'price_asc', 'price_desc']).default('newest')),
     page: intParam(1).transform((n) => n ?? 1),
     limit: intParam(1).transform((n) => Math.min(n ?? DEFAULT_LIMIT, MAX_LIMIT)),
