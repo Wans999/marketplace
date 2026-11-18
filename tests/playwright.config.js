@@ -5,6 +5,7 @@ export default defineConfig({
   testDir: '.',
   fullyParallel: false,
   workers: 1, // reset DB tidak aman dijalankan paralel
+  forbidOnly: !!process.env.CI, // CI gagal kalau ada test.only yang ter-commit
   reporter: [['list'], ['html', { open: 'never' }]],
   use: { baseURL: API_URL },
   webServer: {
