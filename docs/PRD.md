@@ -56,7 +56,7 @@ Fase 1 terdiri dari 11 user story. Setiap acceptance criteria (AC) diberi ID sup
 
 **US-01 Melihat katalog.** Sebagai tamu atau pembeli, saya ingin melihat daftar produk supaya bisa memilih barang.
 
-- AC-01.1: Beranda menampilkan produk terbaru, 12 per halaman, beserta nama, harga (format Rp), nama toko, dan gambar.
+- AC-01.1: Beranda menampilkan produk terbaru, 12 per halaman, beserta nama, harga (format Rp tanpa spasi, misalnya "Rp6.000"), nama toko, dan gambar.
 - AC-01.2: Produk dengan stok 0 tetap tampil dengan label "Habis".
 - AC-01.3: Pagination menampilkan halaman aktif dan total halaman; halaman di luar jangkauan menampilkan daftar kosong, bukan error.
 
@@ -73,7 +73,7 @@ Fase 1 terdiri dari 11 user story. Setiap acceptance criteria (AC) diberi ID sup
 
 - AC-03.1: Menampilkan nama, harga, stok, deskripsi, kategori, dan nama toko.
 - AC-03.2: ID produk yang tidak ada → halaman "Produk tidak ditemukan"; API mengembalikan 404.
-- AC-03.3: Stok 0 → tombol "Tambah ke keranjang" nonaktif.
+- AC-03.3: Stok 0 → tombol "Tambah ke keranjang" nonaktif. (Di slice 1 hanya tombol nonaktif ini yang tampil; tombol untuk stok > 0 dan pemilih jumlah baru muncul di slice 3.)
 
 ### Akun
 
@@ -271,7 +271,7 @@ Fase 1 punya 9 halaman. Header di setiap halaman berisi logo, kolom pencarian (d
 | Halaman | Route | Isi utama | Login |
 | --- | --- | --- | --- |
 | Beranda / katalog | `/` | Banner statis, tile kategori, grid produk, filter kategori dan harga, sorting, pagination | Tidak |
-| Detail produk | `/products/:id` | Info produk, pemilih jumlah, tombol tambah ke keranjang | Tidak |
+| Detail produk | `/products/:id` | Info produk, pemilih jumlah, tombol tambah ke keranjang (pemilih jumlah dan tombol untuk stok > 0 mulai slice 3) | Tidak |
 | Register | `/register` | Form nama, email, password, konfirmasi | Tidak |
 | Login | `/login` | Form email dan password | Tidak |
 | Keranjang | `/cart` | Daftar item, ubah jumlah, hapus, subtotal, tombol checkout | Ya |
@@ -291,7 +291,7 @@ Ambil polanya, bukan tampilannya. Logo, ilustrasi, nama, dan susunan identik dar
 | Pola referensi | Versi project ini |
 | --- | --- |
 | Header: logo, search dengan dropdown kategori, ikon akun, keranjang dengan jumlah item + total | Diambil hampir utuh |
-| Tombol "Shop by Category" di baris navigasi kedua | Tombol "Semua Kategori" + 4–5 kategori utama |
+| Tombol "Shop by Category" di baris navigasi kedua | Tidak dibuat: dengan 5 kategori, isinya sama dengan dropdown kategori di header dan tile kategori di beranda |
 | Hero: banner besar + banner samping | 2 banner **statis** (tanpa autoplay), link ke kategori atau hasil filter |
 | Kategori sebagai tile dengan ikon garis dua warna | Diambil; tile = link ke filter kategori |
 | "Featured Brands" | Diganti "Toko Pilihan" (dari tabel `stores`) (ditunda ke fase berikutnya) |
